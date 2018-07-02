@@ -3,9 +3,8 @@ import requests as r
 
 def getData(webPage, token):
 
-    response = r.get('https://'+webPage,
-                     headers={"Authorization": "Token "+token,
-                              "Content-Type": "application/json"})
+    response = r.get(webPage, headers={"Authorization": "Token "+token,
+                                       "Content-Type": "application/json"})
     print(response.text)
 
     """
@@ -17,5 +16,5 @@ def getData(webPage, token):
     print('response status: ' + str(response.status_code))
 
 
-getData("demo.isora.saltycloud.com/api/reports",
+getData("https://demo.isora.saltycloud.com/api/reports",
         "c548a5524615454ac53281ac01efd56bbf69f4d9")
