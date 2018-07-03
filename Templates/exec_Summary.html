@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Summary</title>
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+
+</head>
+<body>
+
+    <script language="JavaScript">
+        $(document).ready(
+            function ()
+            {
+                var doc = new jsPDF();
+                var specialElementHandlers = {
+                    '#editor': function (element, renderer) {
+                        return true;
+                    }
+                };
+
+                doc.text(20,20,'Hello World');
+                doc.text(20,30,'simple two page text document');
+                doc.addPage();
+                doc.text(20,20,'this is second page');
+
+                $('#buttonSave').click(function ()
+                {
+                    doc.fromHTML($('#content').html(), 15, 15, {
+                        'width': 170,
+                            'elementHandlers': specialElementHandlers
+                    });
+
+                    doc.save('simpleTwoPageTextDoc.pdf');
+                });
+            })
+    </script>
+
+    <div id="content">
+        Hello World
+        simple two page text document
+        (new page)
+        this is second page
+    </div>
+
+
+    <!--<a href="simple_two_page_text_document()" onclick="function ()">Save me</a>-->
+    <button id="buttonSave">Print PDF</button>
+</body>
+</html>
