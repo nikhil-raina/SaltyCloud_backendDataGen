@@ -14,6 +14,7 @@ def getData(webPage, token):
         assessment_type_list = dict()
         org_unit_code = list()
 
+
         for key in results:
             if not assessment_type_list.__contains__(key['assessment_type']):
                 assessment_type_list.setdefault(key['assessment_type'], dict())
@@ -23,15 +24,16 @@ def getData(webPage, token):
 
             val = assessment_type_list.get(key['assessment_type'])
             if not val.get(key['org_unit_name']) is None:
-                if org_unit_code.__contains__(key['org_unit_code']):
+                ans = val.get(key['org_unit_name'])
+                code = ans.pop(len(ans)-1)
+                if code == key['org_unit_code']:
                     val[key['org_unit_name']].append(key['assessment_name'])
+                val[key['org_unit_name']].append(code)
 
             else:
                 val[key['org_unit_name']] = list()
-                #theVal = val.get(key['org_unit_name'])
-                #code = theVal[1]
                 assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
-
+                assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['org_unit_code'])
 
 
 
