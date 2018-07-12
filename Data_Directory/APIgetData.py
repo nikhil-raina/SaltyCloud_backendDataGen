@@ -7,21 +7,35 @@ def getData(webPage, token):
     response = r.get(webPage+"api/reports", headers={"Authorization": "Token "+token,
                                                      "Content-Type": "application/json"})
     data = json.loads(response.text)
-    all_data = dict()
+    all_data = dict
 
     if data['count'] > 0:
         results = data['results']       # results = list
-        each_assessment_type = list()
-        each_assessment_name = list()
+        assessment_type_list = dict()
+        org_unit_code = list()
+
+        for key in results:
+            if not assessment_type_list.__contains__(key['assessment_type']):
+                assessment_type_list.setdefault(key['assessment_type'], dict())
+
+            if not org_unit_code.__contains__(key['org_unit_code']):
+                org_unit_code.append(key['org_unit_code'])
+
+            val = assessment_type_list.get(key['assessment_type'])
+            if not val.get(key['org_unit_name']) is None:
+                if org_unit_code.__contains__(key['org_unit_code']):
+                    val[key['org_unit_name']].append(key['assessment_name'])
+
+            else:
+                val[key['org_unit_name']] = list()
+                #theVal = val.get(key['org_unit_name'])
+                #code = theVal[1]
+                assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
 
 
-        for each in results:
-            if not each_assessment_type.__contains__(each['assessment_type']):
-                each_assessment_type.append(each['assessment_type'])
 
-            each_assessment_name.append(each['assessment_name'])
 
-        all_data["assessment_type"] = each_assessment_type
+
         links = results['links']
         unit_questions = links['unit_questions']
         u_questions_data = unit_q_data(webPage, token, unit_questions)
