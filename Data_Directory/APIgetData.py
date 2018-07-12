@@ -35,12 +35,12 @@ def getData(webPage, token):
                 assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
                 assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['org_unit_code'])
 
+    # ===============================================================
 
+            links = key['links']
+            unit_questions = links["unit-questions"]
 
-
-        links = results['links']
-        unit_questions = links['unit_questions']
-        u_questions_data = unit_q_data(webPage, token, unit_questions)
+            u_questions_data = unit_q_data(webPage, token, unit_questions)
 
         """
         after knowing the data that is required for the graphs... pluck out that specific data from the (text)
@@ -59,7 +59,18 @@ def unit_q_data(webPage, token, unit_questions):
     response = r.get(webPage+unit_questions, headers={"Authorization": "Token "+token,
                                                       "Content-Type": "application/json"})
     data = json.loads(response.text)
-    categories = data['categories']
+    category_name = list()
+    category_id = dict()
+    category_avg = list()
+    questions = dict()
+    for categories in data['categories']:
+        category_id[categories['id']] = list()
+        category_id[categories['id']].append(categories['name'])
+        category_id[categories['id']].append(categories['average'])
+        for que in data['questions']:
+            q1 = que.get('question')
+            if q1['category'] == categories['id']:
+                questions[categories['id']] = que
 
 
 
