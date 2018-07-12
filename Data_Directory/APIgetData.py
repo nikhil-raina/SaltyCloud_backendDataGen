@@ -67,7 +67,7 @@ def unit_q_data(webPage, token, unit_questions):
         category_id[categories['id']] = list()
         category_id[categories['id']].append(categories['name'])
         category_id[categories['id']].append(categories['average'])
-        for que in data['questions']:
+        for que in data['questions']: # wrong. need to fix
             q1 = que.get('question')
             if q1['category'] == categories['id']:
                 questions[categories['id']] = que
