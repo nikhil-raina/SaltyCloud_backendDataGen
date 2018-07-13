@@ -3,26 +3,38 @@ import json
 
 
 def getData(webPage, token):
+    """
+    This function is responsible to get the all the data from the reports in order to be used to make the PDF
+    :param webPage: The URL of the web page
+    :param token: he token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :return: A dictionary containing all the data
+    """
 
     response = r.get(webPage+"api/reports", headers={"Authorization": "Token "+token,
                                                      "Content-Type": "application/json"})
     data = json.loads(response.text)
-    all_data = dict
 
     if data['count'] > 0:
         results = data['results']       # results = list
-        assessment_type_list = dict()
+        assessment_type_dict = dict()
         org_unit_code = list()
 
-
+        # ========================================================== #
+        # ========================================================== #
+        # Makes the 'assessment_type' as the key. Creates a list as the VALUE
+        # 0th position holds the 'assessment name'
+        # 1st position holds the 'org_unit_code'
+        # 2nd position holds 'unit-questions' data as a Dictionary.
         for key in results:
-            if not assessment_type_list.__contains__(key['assessment_type']):
-                assessment_type_list.setdefault(key['assessment_type'], dict())
+            if not assessment_type_dict.__contains__(key['assessment_type']):
+                assessment_type_dict.setdefault(key['assessment_type'], dict())
 
             if not org_unit_code.__contains__(key['org_unit_code']):
                 org_unit_code.append(key['org_unit_code'])
 
-            val = assessment_type_list.get(key['assessment_type'])
+            val = assessment_type_dict.get(key['assessment_type'])
             if not val.get(key['org_unit_name']) is None:
                 ans = val.get(key['org_unit_name'])
                 code = ans.pop(len(ans)-1)
@@ -32,45 +44,67 @@ def getData(webPage, token):
 
             else:
                 val[key['org_unit_name']] = list()
-                assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
-                assessment_type_list[key['assessment_type']][key['org_unit_name']].append(key['org_unit_code'])
+                assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
+                assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(key['org_unit_code'])
 
-    # ===============================================================
+    # =============================================================== #
+    # =============================================================== #
 
             links = key['links']
             unit_questions = links["unit-questions"]
 
             u_questions_data = unit_q_data(webPage, token, unit_questions)
-
-        """
-        after knowing the data that is required for the graphs... pluck out that specific data from the (text)
-        and make a list or dictionary of it.... depends on how you plan on putting it.
-        """
+            assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(u_questions_data)
 
         print()
         print('response status: ' + str(response.status_code))
+        return assessment_type_dict
 
     else:
         return "There is NO DATA present"
 
 
 def unit_q_data(webPage, token, unit_questions):
+    """
+    This function is responsible of getting all the Unit-Question data for the respective 'assessment_name'
+    and returns a dictionary with all the data.
+    :param webPage: The URL of the web page
+    :param token: The token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :param unit_questions: The link to the API from where the data will be taken.
+    :return: A dictionary containing all the data from the specified report.
+    """
 
     response = r.get(webPage+unit_questions, headers={"Authorization": "Token "+token,
                                                       "Content-Type": "application/json"})
     data = json.loads(response.text)
-    category_name = list()
     category_id = dict()
-    category_avg = list()
-    questions = dict()
+
+    # Gets all the 'id' from the category and keeps it as KEYS
+    # The  VALUE is a list of 'name' and 'average'
+    # I have created extra 3 lists that would later be used to store the
+    # 'id', 'text' and 'answer'
     for categories in data['categories']:
         category_id[categories['id']] = list()
         category_id[categories['id']].append(categories['name'])
         category_id[categories['id']].append(categories['average'])
-        for que in data['questions']: # wrong. need to fix
-            q1 = que.get('question')
-            if q1['category'] == categories['id']:
-                questions[categories['id']] = que
+        category_id[categories['id']].append(list())
+        category_id[categories['id']].append(list())
+        category_id[categories['id']].append(list())
+
+    # Get all the questions and answers from the report.
+    # VALUE is a combination of separate lists 'id', 'text' and 'answer'. This is done
+    # when the 'category' from 'question' matches the key from the category_id variable.
+    for questions in data['questions']:
+        question = questions['question']
+        answers = questions['answer']
+        if question['category'] in category_id:
+            category_id[question['category']][2].append(question['id'])
+            category_id[question['category']][3].append(question['text'])
+            category_id[question['category']][4].append(answers)
+
+    return category_id
 
 
 
