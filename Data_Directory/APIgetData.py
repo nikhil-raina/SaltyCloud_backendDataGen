@@ -18,8 +18,6 @@ def getData(webPage, token):
 
     if data['count'] > 0:
         results = data['results']       # results = list
-        #this = results[0]
-        #this2 = this['categories']
         assessment_type_dict = dict()
         org_unit_code = list()
 
@@ -57,7 +55,6 @@ def getData(webPage, token):
 
             u_questions_data = unit_q_data(webPage, token, unit_questions)
             assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(u_questions_data)
-            #assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(key['summary'])
 
         print()
         print('response status: ' + str(response.status_code))
@@ -109,8 +106,4 @@ def unit_q_data(webPage, token, unit_questions):
 
     return category_id
 
-
-
-
-
-getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+# getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
