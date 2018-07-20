@@ -6,7 +6,7 @@ def getData(webPage, token):
     """
     This function is responsible to get the all the data from the reports in order to be used to make the PDF
     :param webPage: The URL of the web page
-    :param token: he token that will be sent as a header.
+    :param token: The token that will be sent as a header.
             Usually indicates that permission has been given to the given party or
             individual who is using the data.
     :return: A dictionary containing all the data
@@ -27,6 +27,7 @@ def getData(webPage, token):
         # 0th position holds the 'assessment name'
         # 1st position holds the 'org_unit_code'
         # 2nd position holds 'unit-questions' data as a Dictionary.
+        # 3rd position holds
         for key in results:
             if not assessment_type_dict.__contains__(key['assessment_type']):
                 assessment_type_dict.setdefault(key['assessment_type'], dict())
@@ -53,8 +54,11 @@ def getData(webPage, token):
             links = key['links']
             unit_questions = links["unit-questions"]
 
-            u_questions_data = unit_q_data(webPage, token, unit_questions)
+            u_questions_data = unit_questions_data(webPage, token, unit_questions)
             assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(u_questions_data)
+            host_data = get_graph_data(webPage, token, links['self'])
+            assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(host_data)
+
 
         print()
         print('response status: ' + str(response.status_code))
@@ -64,7 +68,7 @@ def getData(webPage, token):
         return "There is NO DATA present"
 
 
-def unit_q_data(webPage, token, unit_questions):
+def unit_questions_data(webPage, token, unit_questions):
     """
     This function is responsible of getting all the Unit-Question data for the respective 'assessment_name'
     and returns a dictionary with all the data.
@@ -106,4 +110,36 @@ def unit_q_data(webPage, token, unit_questions):
 
     return category_id
 
-# getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+def get_graph_data(webPage, token, survey_id):
+    """
+    Function to call the survey_id specific based API for the summary, classifications, classifications and
+    unit_questions. Created a list that returns all of this data back to the calling line of code.
+    The list is a specific order:
+            content[0] = data['classifications']
+            content[1] = data['summary']
+            content[2] = data['classification']
+            content[3] = data['unit_questions']
+    :param webPage: The URL of the web page where the data exists
+    :param token: The token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :param survey_id: Survey based specific ID. A basic and necessary requirement
+            in order to get access of the API.
+    :return: A list containing all the necessary data from the API.
+    """
+    response = r.get(webPage+survey_id, headers={"Authorization": "Token "+token,
+                                                      "Content-Type": "application/json"})
+    data = json.loads(response.text)
+    content = list()
+    content.append(data['classifications'])
+    content.append(data['summary'])
+    content.append(data['classification'])
+    content.append(data['unit_questions'])
+
+    return content
+
+
+
+
+
+getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
