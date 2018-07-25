@@ -142,4 +142,4 @@ def get_graph_data(webPage, token, survey_id):
 
 
 
-getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+# getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
