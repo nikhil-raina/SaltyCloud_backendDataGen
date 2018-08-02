@@ -51,8 +51,11 @@ def getData(webPage, token):
             links = key['links']
             unit_questions = links["unit-questions"]
 
+            # Function Call
             u_questions_data = unit_questions_data(webPage, token, unit_questions)
             assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(u_questions_data)
+
+            # Function Call
             host_data = get_graph_data(webPage, token, links['self'])
             assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(host_data)
 
