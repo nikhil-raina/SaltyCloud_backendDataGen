@@ -96,6 +96,7 @@ def unit_questions_data(webPage, token, unit_questions):
         category_id[categories['id']].append(list())
         category_id[categories['id']].append(list())
         category_id[categories['id']].append(list())
+        category_id[categories['id']].append(list())
 
     # Get all the questions and answers from the report.
     # VALUE is a combination of separate lists 'id', 'text' and 'answer'. This is done
@@ -106,7 +107,8 @@ def unit_questions_data(webPage, token, unit_questions):
         if question['category'] in category_id:
             category_id[question['category']][2].append(question['id'])
             category_id[question['category']][3].append(question['text'])
-            category_id[question['category']][4].append(answers)
+            category_id[question['category']][4].append(question['parent'])
+            category_id[question['category']][5].append(answers)
 
     return category_id
 
@@ -142,4 +144,4 @@ def get_graph_data(webPage, token, survey_id):
 
 
 
-# getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
