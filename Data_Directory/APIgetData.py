@@ -12,12 +12,12 @@ def getData(webPage, token):
     :return: A dictionary containing all the data
     """
 
-    response = r.get(webPage+"api/reports", headers={"Authorization": "Token "+token,
-                                                     "Content-Type": "application/json"})
+    response = r.get(webPage + "api/reports", headers={"Authorization": "Token " + token,
+                                                       "Content-Type": "application/json"})
     data = json.loads(response.text)
 
     if data['count'] > 0:
-        results = data['results']       # results = list
+        results = data['results']  # results = list
         assessment_type_dict = dict()
         org_unit_code = list()
 
@@ -38,7 +38,7 @@ def getData(webPage, token):
             val = assessment_type_dict.get(key['assessment_type'])
             if not val.get(key['org_unit_name']) is None:
                 ans = val.get(key['org_unit_name'])
-                code = ans.pop(len(ans)-1)
+                code = ans.pop(len(ans) - 1)
                 if code == key['org_unit_code']:
                     val[key['org_unit_name']].append(key['assessment_name'])
                 val[key['org_unit_name']].append(code)
@@ -48,9 +48,6 @@ def getData(webPage, token):
                 assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(key['assessment_name'])
                 assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(key['org_unit_code'])
 
-    # =============================================================== #
-    # =============================================================== #
-
             links = key['links']
             unit_questions = links["unit-questions"]
 
@@ -59,9 +56,7 @@ def getData(webPage, token):
             host_data = get_graph_data(webPage, token, links['self'])
             assessment_type_dict[key['assessment_type']][key['org_unit_name']].append(host_data)
 
-
-        print()
-        print('response status: ' + str(response.status_code))
+        # print('response status: ' + str(response.status_code))
         return assessment_type_dict
 
     else:
@@ -80,8 +75,8 @@ def unit_questions_data(webPage, token, unit_questions):
     :return: A dictionary containing all the data from the specified report.
     """
 
-    response = r.get(webPage+unit_questions, headers={"Authorization": "Token "+token,
-                                                      "Content-Type": "application/json"})
+    response = r.get(webPage + unit_questions, headers={"Authorization": "Token " + token,
+                                                        "Content-Type": "application/json"})
     data = json.loads(response.text)
     category_id = dict()
 
@@ -112,6 +107,7 @@ def unit_questions_data(webPage, token, unit_questions):
 
     return category_id
 
+
 def get_graph_data(webPage, token, survey_id):
     """
     Function to call the survey_id specific based API for the summary, classifications, classifications and
@@ -129,8 +125,8 @@ def get_graph_data(webPage, token, survey_id):
             in order to get access of the API.
     :return: A list containing all the necessary data from the API.
     """
-    response = r.get(webPage+survey_id, headers={"Authorization": "Token "+token,
-                                                      "Content-Type": "application/json"})
+    response = r.get(webPage + survey_id, headers={"Authorization": "Token " + token,
+                                                   "Content-Type": "application/json"})
     data = json.loads(response.text)
     content = list()
     content.append(data['classifications'])
@@ -139,9 +135,5 @@ def get_graph_data(webPage, token, survey_id):
     content.append(data['unit_questions'])
 
     return content
-
-
-
-
 
 # getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
