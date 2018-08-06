@@ -79,4 +79,4 @@ def makeCSV(assessment, dept, category, questionID, parentQuestionID, questions,
         csvWriter.writerow(write)
 
 
-CSV_file_getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+# CSV_file_getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
