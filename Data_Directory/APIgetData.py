@@ -1,7 +1,6 @@
 import requests as r
 import json
 
-
 def getData(webPage, token):
     """
     This function is responsible to get the all the data from the reports in order to be used to make the PDF
@@ -139,4 +138,55 @@ def get_graph_data(webPage, token, survey_id):
 
     return content
 
+
+def heat_map_data(webPage, survey_ID, token):
+    """
+    This function is responsible for getting all the data from the Unit_Questions API for
+    the Heat Map for the Org_Unit_Questions
+    :param webPage: The URL of the web page
+    :param survey_ID:
+    :param token:The token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :return: A Tuple containing:
+                0: Categorical Names
+                1: Categorical Average
+                2: A dictionary of category specific questions
+                    :key (id): specific categorical id to match the
+                            following questions
+                    :value (text): text from the categorical specific questions
+
+                3: A dictionary of category specific answers
+                    :key (id): specific categorical id to match the
+                            following questions
+                    :value (answer): "answer" dictionary
+    """
+    response = r.get(webPage + "api/reports/" + survey_ID + "/unit_questions",
+                     headers={"Authorization": "Token " + token, "Content-Type": "application/json"})
+
+    data = json.loads(response.text)
+    categories = data["categories"]
+    questions = data["questions"]
+    z_names = list()
+    z_avg = list()
+    z_text_questions = dict()
+    z_answer_questions = dict()
+    for dictionary in categories:
+        z_names.append(dictionary["name"])
+        z_avg.append(dictionary["average"])
+        z_text_questions.setdefault(dictionary["id"], list())
+        z_answer_questions.setdefault(dictionary["id"], list())
+
+    for dictionary in questions:
+        question = dictionary["question"]
+        answer = dictionary["answer"]
+        z_text_questions[question["category"]].append(question["text"])
+        z_answer_questions[question["category"]].append(answer)
+
+    return z_names, z_avg, z_text_questions, z_answer_questions
+
+
 # getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+# heat_map_data("https://demo.isora.saltycloud.com/", "04e818ce-6d54-4ea0-a7ef-1c2bb2d52936",
+#                "c548a5524615454ac53281ac01efd56bbf69f4d9")
+
