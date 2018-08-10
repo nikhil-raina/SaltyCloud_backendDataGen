@@ -1,6 +1,7 @@
 import requests as r
 import json
 
+
 def getData(webPage, token):
     """
     This function is responsible to get the all the data from the reports in order to be used to make the PDF
@@ -173,7 +174,11 @@ def heat_map_data(webPage, survey_ID, token):
     z_answer_questions = dict()
     for dictionary in categories:
         z_names.append(dictionary["name"])
-        z_avg.append(dictionary["average"])
+
+        # for proper value representation on the Heat Map
+        # The value will be represented on each cell.
+        z_avg.append(dictionary["average"] / 100)
+
         z_text_questions.setdefault(dictionary["id"], list())
         z_answer_questions.setdefault(dictionary["id"], list())
 
@@ -185,8 +190,6 @@ def heat_map_data(webPage, survey_ID, token):
 
     return z_names, z_avg, z_text_questions, z_answer_questions
 
-
 # getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
 # heat_map_data("https://demo.isora.saltycloud.com/", "04e818ce-6d54-4ea0-a7ef-1c2bb2d52936",
 #                "c548a5524615454ac53281ac01efd56bbf69f4d9")
-
