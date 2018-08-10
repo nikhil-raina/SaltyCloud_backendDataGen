@@ -128,6 +128,7 @@ def get_graph_data(webPage, token, survey_id):
             in order to get access of the API.
     :return: A list containing all the necessary data from the API.
     """
+
     response = r.get(webPage + survey_id, headers={"Authorization": "Token " + token,
                                                    "Content-Type": "application/json"})
     data = json.loads(response.text)
@@ -146,7 +147,7 @@ def heat_map_data(webPage, survey_ID, token):
     the Heat Map for the Org_Unit_Questions
     :param webPage: The URL of the web page
     :param survey_ID:
-    :param token:The token that will be sent as a header.
+    :param token: The token that will be sent as a header.
             Usually indicates that permission has been given to the given party or
             individual who is using the data.
     :return: A Tuple containing:
@@ -162,6 +163,7 @@ def heat_map_data(webPage, survey_ID, token):
                             following questions
                     :value (answer): "answer" dictionary
     """
+
     response = r.get(webPage + "api/reports/" + survey_ID + "/unit_questions",
                      headers={"Authorization": "Token " + token, "Content-Type": "application/json"})
 
@@ -190,6 +192,38 @@ def heat_map_data(webPage, survey_ID, token):
 
     return z_names, z_avg, z_text_questions, z_answer_questions
 
-# getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
-# heat_map_data("https://demo.isora.saltycloud.com/", "04e818ce-6d54-4ea0-a7ef-1c2bb2d52936",
-#                "c548a5524615454ac53281ac01efd56bbf69f4d9")
+
+def getSurvey_ID(assessment_type, assessment_name, org_unit_name, token):
+    """
+    Function that is responsible to get the required survey_id of the given attributes. If the survey_id doesn't
+    exist then 'Survey_ID does not EXIST' is given as the output.
+    :param assessment_type: The type of the Assessment
+    :param assessment_name: The name of the Assessment
+    :param org_unit_name: The Org Unit Name
+    :param token: The token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :return: survey_id OR 'Survey_ID does not EXIST'
+    """
+
+    response = r.get("https://demo.isora.saltycloud.com/api/reports",
+                     headers={"Authorization": "Token " + token,
+                              "Content-Type": "application/json"})
+
+    data = json.loads(response.text)
+    results = data["results"]
+    for dictionary in results:
+        if dictionary["assessment_name"] == assessment_name and dictionary["assessment_type"] == assessment_type:
+            if dictionary["org_unit_name"] == org_unit_name:
+                return dictionary["survey_id"]
+
+    return "Survey_ID does not EXIST"
+
+
+if __name__ == '__main__':
+    print(getSurvey_ID("GLBA", "SaltyU SFA FY'18 - spring", "Infrastructure & Students",
+                       "c548a5524615454ac53281ac01efd56bbf69f4d9"))
+
+    getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+    heat_map_data("https://demo.isora.saltycloud.com/", "04e818ce-6d54-4ea0-a7ef-1c2bb2d52936",
+                  "c548a5524615454ac53281ac01efd56bbf69f4d9")
