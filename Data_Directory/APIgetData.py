@@ -151,7 +151,9 @@ def heat_map_data(webPage, survey_ID, token):
             Usually indicates that permission has been given to the given party or
             individual who is using the data.
     :return: A Tuple containing:
-                0: Categorical Names
+                0: A Tuple containing:
+                    0: Categorical Names
+                    1: ID
                 1: Categorical Average
                 2: A dictionary of category specific questions
                     :key (id): specific categorical id to match the
@@ -175,7 +177,7 @@ def heat_map_data(webPage, survey_ID, token):
     z_text_questions = dict()
     z_answer_questions = dict()
     for dictionary in categories:
-        z_names.append(dictionary["name"])
+        z_names.append((dictionary["name"], dictionary["id"]))
 
         # for proper value representation on the Heat Map
         # The value will be represented on each cell.
