@@ -177,7 +177,7 @@ def heat_map_data(webPage, survey_ID, token):
 
         # for proper value representation on the Heat Map
         # The value will be represented on each cell.
-        z_avg.append(dictionary["average"] / 100)
+        z_avg.append(round((dictionary["average"] / 100), 4))
 
         z_text_questions.setdefault(dictionary["id"], list())
         z_answer_questions.setdefault(dictionary["id"], list())
