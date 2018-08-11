@@ -6,10 +6,10 @@ from Data_Directory.APIgetData import *
 
 def category_HeatMap(names, avg):
     """
-
-    :param names:
-    :param avg:
-    :return:
+    Function is responsible for creating Category wise Heat Maps, with respect to the Org Unit Questions.
+    :param names: A list of Names of Org Unit Questions
+    :param avg: A list of Averages of each Org Unit Question
+    :return: None
     """
 
     heatDict = dict()
@@ -45,11 +45,11 @@ def category_HeatMap(names, avg):
 
 def subCategory_HeatMap(name, questions, answers):
     """
-
+    Function is responsible for creating Sub Category wise Heat Maps, with respect to the Org Unit Question's category.
     :param name: The title of the Heat Map
     :param questions: A list of Questions regarding the specific categorical name
     :param answers: A list of dictionaries with Answers regarding the specific categorical name
-    :return:
+    :return: None
     """
 
     plt.title(name)
@@ -107,7 +107,6 @@ if __name__ == '__main__':
                          {'answer': 0.5, 'details': 'in final draft', 'value': 3.75, 'max_value': 7.5,
                           'favorability': 'partial-50'}])
     # subCategory_HeatMap(names[val], questions[category_id[val]], answers[category_id[val]])
-
-    #category_HeatMap(names, avg)
+    category_HeatMap(names, avg)
 
     # plt.show()
