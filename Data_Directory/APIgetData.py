@@ -113,7 +113,7 @@ def unit_questions_data(webPage, token, unit_questions):
 
 def get_graph_data(webPage, token, survey_id):
     """
-    Function to call the survey_id specific based API for the summary, classifications, classifications and
+    Function to call the survey_id specific based API for the summary, classifications, classification and
     unit_questions. Created a list that returns all of this data back to the calling line of code.
     The list is a specific order:
             content[0] = data['classifications']
