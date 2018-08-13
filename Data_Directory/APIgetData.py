@@ -141,6 +141,65 @@ def get_graph_data(webPage, token, survey_id):
     return content
 
 
+def commonReport_data(assessment_name, common_dictionary, token, webPage):
+    """
+    Function that creates a dictionary and passes it to the parent function to create the Common Report Heat Map
+    :param webPage: The URL of the web page
+    :param token: The token that will be sent as a header.
+            Usually indicates that permission has been given to the given party or
+            individual who is using the data.
+    :param assessment_name: The required Heat Map of the specified Assessment Name
+    :param common_dictionary: Dictionary:
+                                    :key: assessment_name
+                                    :value: Nested list
+                                                Each cell of the outer list symbolised a list
+                                                of [assessment_type, org_unit_name]
+    :return: Dictionary:
+                :key: org_unit_name
+                :value: Nested List
+                            [0]: Category Based Questions
+                            [1]: Category Based Averages
+    """
+    param_1 = common_dictionary[assessment_name]
+    main_dict = dict()
+    for each in param_1:
+        survey_id = getSurvey_ID(each[0], assessment_name, each[1], token)
+        heatMap_data = heat_map_data(webPage, survey_id, token)
+        z_names = list()
+        for i in heatMap_data[0]:
+            z_names.append(i[0])
+        z_avg = heatMap_data[1]
+        main_dict[each[1]] = [z_names, z_avg]
+
+    return main_dict
+
+
+def common_heat_map_data(webAPI_data):
+    """
+    Function that would get the common report data from the Report API.
+    The reason for this function is to help in the formation of the common_report_HeatMap
+    :param webAPI_data: Dictionary containing all the Data from the Report API
+    :return: Dictionary:
+                :key: assessment_name
+                :value: Nested list
+                     Each cell of the outer list symbolised a list of [assessment_type, org_unit_name]
+    """
+
+    common_dictionary = dict()
+    for assessment_type in webAPI_data:
+        sec_dict = webAPI_data[assessment_type]
+        for org_unit_name in sec_dict:
+            val = sec_dict[org_unit_name][0]
+            small_lst = list()
+            if not common_dictionary.__contains__(val):
+                common_dictionary[val] = list()
+            small_lst.append(assessment_type)
+            small_lst.append(org_unit_name)
+            common_dictionary[val].append(small_lst)
+
+    return common_dictionary
+
+
 def heat_map_data(webPage, survey_ID, token):
     """
     This function is responsible for getting all the data from the Unit_Questions API for
@@ -223,9 +282,10 @@ def getSurvey_ID(assessment_type, assessment_name, org_unit_name, token):
 
 
 if __name__ == '__main__':
-    print(getSurvey_ID("GLBA", "SaltyU SFA FY'18 - spring", "Infrastructure & Students",
-                       "c548a5524615454ac53281ac01efd56bbf69f4d9"))
+    # print(getSurvey_ID("GLBA", "SaltyU SFA FY'18 - spring", "Infrastructure & Students",
+    #                    "c548a5524615454ac53281ac01efd56bbf69f4d9"))
 
-    getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9")
+    dictionary = common_heat_map_data(getData("https://demo.isora.saltycloud.com/", "c548a5524615454ac53281ac01efd56bbf69f4d9"))
+
     heat_map_data("https://demo.isora.saltycloud.com/", "04e818ce-6d54-4ea0-a7ef-1c2bb2d52936",
                   "c548a5524615454ac53281ac01efd56bbf69f4d9")
