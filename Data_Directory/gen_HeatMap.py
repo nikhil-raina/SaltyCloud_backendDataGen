@@ -9,7 +9,7 @@ def category_HeatMap(names, avg):
     Function is responsible for creating Category wise Heat Maps, with respect to the Org Unit Questions.
     :param names: A list of Names of Org Unit Questions
     :param avg: A list of Averages of each Org Unit Question
-    :return: None
+    :return: Heat Map
     """
 
     heatDict = dict()
@@ -39,8 +39,9 @@ def category_HeatMap(names, avg):
     )
     plt.xlabel('Average')
     plt.ylabel('Categories')
-    print(h_map)
-    plt.show()
+    # print(h_map)
+
+    return h_map
 
 
 def subCategory_HeatMap(name, questions, answers):
@@ -49,7 +50,7 @@ def subCategory_HeatMap(name, questions, answers):
     :param name: The title of the Heat Map
     :param questions: A list of Questions regarding the specific categorical name
     :param answers: A list of dictionaries with Answers regarding the specific categorical name
-    :return: None
+    :return: Heat Map
     """
 
     plt.title(name)
@@ -80,8 +81,9 @@ def subCategory_HeatMap(name, questions, answers):
     )
     plt.xlabel('Value')
     plt.ylabel('Questions')
-    print(h_map)
-    plt.show()
+    # print(h_map)
+
+    return h_map
 
 
 def common_report_HeatMap(main_dict, assessment_name):
@@ -92,11 +94,10 @@ def common_report_HeatMap(main_dict, assessment_name):
             :key: org_unit_name
             :value: Nested list
                     Each cell holds a list that contains individual specific data to create a category based Heat Map
-    :return: None
+    :return: Heat Map
     """
     columns = list(main_dict.keys())
     index = main_dict[columns[0]][0]
-    # index = ['1','2','3','4','5','6']
     data = list()
     maximum = 0
     for i in range(0, len(columns)):
@@ -129,9 +130,9 @@ def common_report_HeatMap(main_dict, assessment_name):
     )
     plt.xlabel("Questions")
     plt.ylabel("Org_unit_Questions")
-    print(h_map)
+    # print(h_map)
 
-    plt.show()
+    return h_map
 
 
 if __name__ == '__main__':
